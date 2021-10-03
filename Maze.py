@@ -1,8 +1,7 @@
 from random import randint
-
-
+from Position import *
 class Maze:
-    wallRGB, wayRGB = (0, 0, 0), (255, 255, 255)
+    wallRGB, wayRGB, enterRGB, exitRGB = (0, 0, 0), (255, 255, 255), (255, 0, 0), (0, 255, 0)
 
     def __init__(self, width, height, maze_name=''):
         self.width = width
@@ -13,22 +12,35 @@ class Maze:
         self.visited = set()
         self.toDraw = set()
         self.maze = []
+        self.internalMaze = []
 
         self.visited.add((0, 0))
 
         with open(maze_name) as maze:
             lines = maze.readlines()
             for i in range(0,len(lines)):
+                viewRow = []
                 row = []
                 line = lines[i]
                 for j in range(0,len(line)):
-                    if not line[j] == '1' and not line[j] == '\n':
-                        row.append(Maze.wayRGB)
+                    if line[j] == '0' and not line[j] == '\n':
+                        viewRow.append(Maze.wayRGB)
+                        row.append(Position('0'))
                         self.toDraw.add((i+1,j+1))
-                    else: 
-                        row.append(Maze.wallRGB)
+                    elif line[j] == 'E':
+                        viewRow.append(Maze.enterRGB)
+                        row.append(Position('E'))
+                        self.toDraw.add((i+1,j+1))
+                    elif line[j] == 'S':
+                        viewRow.append(Maze.exitRGB)
+                        row.append(Position('S'))
+                        self.toDraw.add((i+1,j+1))
+                    else:
+                        viewRow.append(Maze.wallRGB)
+                        row.append(Position('1'))
                         self.frontier.add((i,j))
-                self.maze.append(row)
+                self.maze.append(viewRow)
+                self.internalMaze.append(row)
 
     def _clamp(self, n, minN, maxN):
         return min(max(minN, n), maxN)

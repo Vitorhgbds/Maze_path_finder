@@ -54,6 +54,8 @@ if __name__=='__main__':
     window = MainWindow(cf.WINDOW_TITLE, cf.MAZE_WIDTH, cf.MAZE_HEIGHT, cf.BLOCK_SIZE, cf.MAZE_NAME)
     window.generateMaze()
 
+    print(window.maze.internalMaze)
+
     mainClock = pygame.time.Clock()
     while True:
 
