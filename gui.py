@@ -1,5 +1,6 @@
 import os
 import sys
+from time import sleep
 
 import pygame
 from pygame import key
@@ -7,6 +8,7 @@ from pygame.constants import K_ESCAPE, KEYDOWN
 
 import config as cf
 from Maze import Maze
+from FinderAlgortihm import SimulateAnnealing
 
 
 class MainWindow:
@@ -36,12 +38,31 @@ class MainWindow:
         pygame.display.flip()
         pygame.display.update()
 
+    def drawDefaultRectagle(self, coordinate):
+        (y,x) = coordinate
+        self.drawRectangle(x * self.blockSize, y * self.blockSize, self.blockSize, self.blockSize,
+                                         self.maze.getColor(y-1, x-1))
+
+    def drawPlayerPath(self, coordinate):
+        (y,x) = coordinate
+        self.drawRectangle(x * self.blockSize, y * self.blockSize, self.blockSize, self.blockSize, (0,0,255))
+
     def generateMaze(self):
         for y,x in self.maze.getToDraw():
-            self.drawRectangle(x * self.blockSize, y * self.blockSize, self.blockSize, self.blockSize,
-                                         self.maze.getColor(y-1, x-1))
+            self.drawDefaultRectagle((y,x))
         pygame.display.update()
-
+    
+    def updatePath(self, nodes):
+        print("Trying to paint")
+        for node in self.maze.getToDraw():
+            if node in nodes:
+                self.drawPlayerPath(node)
+            else:
+                self.drawDefaultRectagle(node)
+        pygame.display.update()
+        print("going on a sleep")
+        
+            
 
 """
     to change configuration, change config.py
@@ -51,11 +72,10 @@ if __name__=='__main__':
     os.environ['SDL_VIDEO_CENTERED'] = '1'
 
     pygame.init()
-    window = MainWindow(cf.WINDOW_TITLE, cf.MAZE_WIDTH, cf.MAZE_HEIGHT, cf.BLOCK_SIZE, cf.MAZE_NAME)
+    window = MainWindow(cf.WINDOW_TITLE, cf.MAZE_WIDTH, cf.MAZE_HEIGHT, cf.BLOCK_SIZE, cf.MAZE_NAME)    
     window.generateMaze()
-
-    print(window.maze.internalMaze)
-
+    finder = SimulateAnnealing(window.maze.internalMaze, window.maze.startingPosition)
+    finder.executeAlgoritm(window.updatePath)
     mainClock = pygame.time.Clock()
     while True:
 

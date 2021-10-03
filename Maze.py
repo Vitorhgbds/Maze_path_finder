@@ -18,26 +18,27 @@ class Maze:
 
         with open(maze_name) as maze:
             lines = maze.readlines()
-            for i in range(0,len(lines)):
+            for i in range(len(lines)):
                 viewRow = []
                 row = []
                 line = lines[i]
-                for j in range(0,len(line)):
+                for j in range(len(line)):
                     if line[j] == '0' and not line[j] == '\n':
                         viewRow.append(Maze.wayRGB)
-                        row.append(Position('0'))
+                        row.append(Position('0', i, j))
                         self.toDraw.add((i+1,j+1))
                     elif line[j] == 'E':
                         viewRow.append(Maze.enterRGB)
-                        row.append(Position('E'))
-                        self.toDraw.add((i+1,j+1))
+                        row.append(Position('E', i, j))
+                        self.startingPosition = (i , j)
+                        self.toDraw.add((i + 1, j + 1))
                     elif line[j] == 'S':
                         viewRow.append(Maze.exitRGB)
-                        row.append(Position('S'))
+                        row.append(Position('S', i, j))
                         self.toDraw.add((i+1,j+1))
                     else:
                         viewRow.append(Maze.wallRGB)
-                        row.append(Position('1'))
+                        row.append(Position('1', i, j))
                         self.frontier.add((i,j))
                 self.maze.append(viewRow)
                 self.internalMaze.append(row)
