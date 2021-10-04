@@ -1,5 +1,8 @@
 from random import randint
+
 from Position import *
+
+
 class Maze:
     wallRGB, wayRGB, enterRGB, exitRGB = (0, 0, 0), (255, 255, 255), (255, 0, 0), (0, 255, 0)
 
@@ -15,7 +18,6 @@ class Maze:
         self.internalMaze = []
 
         self.visited.add((0, 0))
-
         with open(maze_name) as maze:
             lines = maze.readlines()
             for i in range(len(lines)):
@@ -33,6 +35,7 @@ class Maze:
                         self.startingPosition = (i , j)
                         self.toDraw.add((i + 1, j + 1))
                     elif line[j] == 'S':
+                        self.endPosition = (i,j)
                         viewRow.append(Maze.exitRGB)
                         row.append(Position('S', i, j))
                         self.toDraw.add((i+1,j+1))
@@ -42,6 +45,7 @@ class Maze:
                         self.frontier.add((i,j))
                 self.maze.append(viewRow)
                 self.internalMaze.append(row)
+
 
     def _clamp(self, n, minN, maxN):
         return min(max(minN, n), maxN)
