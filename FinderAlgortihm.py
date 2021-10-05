@@ -1,7 +1,9 @@
-from random import randint, random
-import time
-from Position import MazePositionType
 import math
+import time
+from random import randint, random
+
+from Position import MazePositionType
+
 
 class SimulateAnnealing:
 
@@ -15,6 +17,7 @@ class SimulateAnnealing:
         self.cleanLoopsAfterComplete = cleanLoopsAfterComplete
         self.decreaseEnergyPercetage = config["decreaseEnergyPercetage"]
         self.currentGeneration = []
+        self.best = None
 
 
     def _findAllAvailablePathOnMaze(self) -> int:
@@ -60,6 +63,7 @@ class SimulateAnnealing:
                     if nextPosition.type == MazePositionType.EXIT:
                         if len(wallIndexes) == 0:
                             heuristic = 0
+                            self.best = (visitedPositions, allPositions, heuristic, allMovements, foundS, wallIndexes, True) 
                         print(f"FOUNDED, has that many walls: {len(wallIndexes)} still to fix")
                         foundS = True
                         break
@@ -123,12 +127,14 @@ class SimulateAnnealing:
     
     def executeAlgoritm(self, updateDraw):
         gene = self._initalizeFirstSolution()
-        for n in range(self.interactionNumber):
+        draw = False
+        for n in range(self.interactionNumber): 
             (currentPath, allPositions, soluctionEnergyValue, wallIdxs, allMovements, foundS, loopedPositions) = self._calculateHeuristc(gene)
             print(f"Loop: {n}. Current Temp: {self.currentTemp}, H: {soluctionEnergyValue}")
             if(soluctionEnergyValue <= 0):
                 print("Energy is perfect")
-                updateDraw((currentPath, soluctionEnergyValue, allMovements, allPositions, foundS), False)
+                draw = n % 1000 == 0 or foundS
+                updateDraw((currentPath, soluctionEnergyValue, allMovements, allPositions, foundS, wallIdxs, draw), False)
                 break
             neighboorGene = self._generateNeighboorGene(gene, wallIdxs, loopedPositions)
             (neighboorPath, allNeighboorPositions, neighboorGeneEnergyValue, _, allMovementsNeighboor, foundSNg, _) = self._calculateHeuristc(neighboorGene)
@@ -137,9 +143,16 @@ class SimulateAnnealing:
             if energyValue <= 0:
                 print("neighboor is better")
                 gene = neighboorGene
-                updateDraw((neighboorPath, neighboorGeneEnergyValue, allMovementsNeighboor, allNeighboorPositions, foundSNg), True)
+                draw = n % 1000 == 0 or foundS
+                updateDraw((neighboorPath, neighboorGeneEnergyValue, allMovementsNeighboor, allNeighboorPositions, foundSNg, wallIdxs, draw), True)
             else:
-                randomProbability = random()
+                # 
+
+                if foundS:
+                    self.lastSolution = (currentPath, soluctionEnergyValue, allMovements, allPositions, foundS, wallIdxs, True)
+                    randomProbability = 0.001
+                else:    
+                    randomProbability = randint(0,60) / 100
                 value = math.exp(-energyValue/(self.currentTemp*1.0))
                 if value < randomProbability:
                     print("neighboor is worst, but will picked")
@@ -149,9 +162,15 @@ class SimulateAnnealing:
                     allMovements = allMovementsNeighboor
                     allPositions = allNeighboorPositions
                     foundS = foundSNg
-                
-                updateDraw((currentPath, soluctionEnergyValue, allMovements, allPositions, foundS), True)
+                draw = n % 1000 == 0 or foundS
+                updateDraw((currentPath, soluctionEnergyValue, allMovements, allPositions, foundS, wallIdxs, draw), True)
             self.currentTemp = self.currentTemp * self.decreaseEnergyPercetage
+        if self.best != None:
+            updateDraw(self.best, False)
+            print('best solution found without hitting walls')
+        elif self.lastSolution:
+            updateDraw(self.lastSolution, False)
+            print('cant find any solution without hitting a wall')
 
 
 class Movement:

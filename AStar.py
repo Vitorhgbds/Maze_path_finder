@@ -17,6 +17,7 @@ class AStar:
         self.maze = maze
         self.start = start
         self.end = end
+        self.solved_path = []
 
     def _heuristic(self, actual_cell):
         coordinate = actual_cell.coordinate
@@ -27,22 +28,22 @@ class AStar:
         return horizontal + vertical
 
     def _find_path(self, end):
-        path = []
-        path.append(end.coordinate)
+        self.solved_path.append(end.coordinate)
         while(end.get_father() != None):
             #print(end.get_father())
             end = end.get_father()
-            path.append(end.coordinate)
-        path.reverse()
-        print(path)
+            self.solved_path.append(end.coordinate)
+        self.solved_path.reverse()
+        print(self.solved_path)
 
-    def solve(self):
+    def solve(self, print_path):
         print('solving...')
         start, end = load_maze_graph(self.maze, self.start, self.end)
         #print(end)
         self.openList.append(start)
         walls = ['1']
         while(end not in self.closedList and len(self.openList) > 0):
+            print_path((self.solved_path, self.closedList, self.openList))
             cell = self.openList.pop()
             self.closedList.add(cell)
             neighbors = cell.get_neighbors()
@@ -70,4 +71,5 @@ class AStar:
             print('encontrou uma solucao')
             #print(self.closedList)
             self._find_path(end)
+            print_path((self.solved_path, self.closedList, self.openList))
 

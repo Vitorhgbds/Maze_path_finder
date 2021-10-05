@@ -1,9 +1,11 @@
 import os
+import random
 import sys
 from time import sleep
 from typing import Tuple
 
 import pygame
+from numpy.random import random_integers
 from pygame import key
 from pygame.constants import K_ESCAPE, KEYDOWN
 
@@ -45,9 +47,9 @@ class MainWindow:
         self.drawRectangle(x * self.blockSize, y * self.blockSize, self.blockSize, self.blockSize,
                                          self.maze.getColor(y-1, x-1))
 
-    def drawPlayerPath(self, coordinate):
+    def drawPlayerPath(self, coordinate, color):
         (y,x) = coordinate
-        self.drawRectangle(x * self.blockSize, y * self.blockSize, self.blockSize, self.blockSize, (0,0,255))
+        self.drawRectangle(x * self.blockSize, y * self.blockSize, self.blockSize, self.blockSize, color)
 
     def generateMaze(self):
         for y,x in self.maze.getToDraw():
@@ -73,21 +75,68 @@ class MainWindow:
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
+            if event.type == KEYDOWN:
+                if(event.key == K_ESCAPE):
+                    pygame.quit()
+                    sys.exit()
         mainClock.tick(60)
 
     lastWasFound = False
+
+    def astar_printPath(self, pathUntilNow):
+        (endPath, closeSet, openSet) = pathUntilNow
+        if(len(openSet) > 0):
+            for node in openSet:
+                (y,x) = node.coordinate
+                self.drawPlayerPath((y + 1, x + 1),(0,200,0))
+                sleep(0.01)
+                self.validadeEvents()
+        if(len(closeSet) > 0):
+            for node in openSet:
+                (y,x) = node.coordinate
+                self.drawPlayerPath((y + 1, x + 1),(200,0,0))
+                sleep(0.01)
+                self.validadeEvents()
+        if(len(endPath) > 0):
+            for coordinate in endPath:
+                (y,x) = coordinate
+                self.drawPlayerPath((y + 1, x + 1),(0,0,255))
+                sleep(0.1)
+                self.validadeEvents()
+
     def printPath(self, pathUntilNow, clean):
-        (currentPath, heuristc, Allmovements, allPositions, foundSolution) = pathUntilNow
+        (currentPath, heuristc, Allmovements, allPositions, foundSolution, still_to_Fix, draw) = pathUntilNow
         print(f"H: {heuristc}, Path {currentPath}")
         print(f"AllPositions: {allPositions}")
         print(f"AllMoviments: {Allmovements}")
         print(f"\n\n")
+        #self.validadeEvents()
+        if(draw):
+            self.generateMaze()
+            color = (random.randint(55,255),random.randint(55,255),random.randint(55,255))
+            for coordinate in currentPath:
+                self.validadeEvents()
+                (y,x) = coordinate
+                self.drawPlayerPath((y + 1, x + 1),color)
+                self.validadeEvents()
         if foundSolution:
-            sleep(1.5)
+            self.generateMaze()
+            sleep(1)
+            color = (random.randint(55,255),random.randint(55,255),random.randint(55,255))
+            if(len(still_to_Fix) > 0):
+                color = (255,0,255)
+            for coordinate in allPositions:
+                self.validadeEvents()
+                (y,x) = coordinate
+                self.drawPlayerPath((y + 1, x + 1),color)
+                sleep(0.01)
+                self.validadeEvents()
+            
         if clean: 
             print(chr(27)+'[2j')
             print('\033c')
             print('\x1bc')
+            
 
 """
     to change configuration, change config.py
@@ -103,7 +152,7 @@ if __name__=='__main__':
     finder = SimulateAnnealing(window.maze.internalMaze, window.maze.startingPosition, False, config)
     finder.executeAlgoritm(window.printPath)
     #astar = AStar(maze=window.maze.internalMaze,start=window.maze.startingPosition,end=window.maze.endPosition)
-    #astar.solve()
+    #astar.solve(window.astar_printPath)
     mainClock = pygame.time.Clock()
     while True:
 
