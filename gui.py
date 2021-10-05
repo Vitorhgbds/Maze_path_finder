@@ -8,8 +8,9 @@ from pygame import key
 from pygame.constants import K_ESCAPE, KEYDOWN
 
 import config as cf
-from Maze import Maze
+from AStar import AStar
 from FinderAlgortihm import SimulateAnnealing
+from Maze import Maze
 
 
 class MainWindow:
@@ -101,6 +102,8 @@ if __name__=='__main__':
     config = {"interactionNumber": 90000, "initalTemp": 500000, "decreaseEnergyPercetage" : 0.7}
     finder = SimulateAnnealing(window.maze.internalMaze, window.maze.startingPosition, False, config)
     finder.executeAlgoritm(window.printPath)
+    #astar = AStar(maze=window.maze.internalMaze,start=window.maze.startingPosition,end=window.maze.endPosition)
+    #astar.solve()
     mainClock = pygame.time.Clock()
     while True:
 
