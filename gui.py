@@ -1,6 +1,7 @@
 import os
 import sys
 from time import sleep
+from typing import Tuple
 
 import pygame
 from pygame import key
@@ -54,15 +55,38 @@ class MainWindow:
     
     def updatePath(self, nodes):
         print("Trying to paint")
+        print(nodes)
         for node in self.maze.getToDraw():
             if node in nodes:
                 self.drawPlayerPath(node)
             else:
                 self.drawDefaultRectagle(node)
+        self.validadeEvents()
         pygame.display.update()
         print("going on a sleep")
-        
-            
+        sleep(2)
+
+    def validadeEvents(self):
+        mainClock = pygame.time.Clock()
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+        mainClock.tick(60)
+
+    lastWasFound = False
+    def printPath(self, pathUntilNow, clean):
+        (currentPath, heuristc, Allmovements, allPositions, foundSolution) = pathUntilNow
+        print(f"H: {heuristc}, Path {currentPath}")
+        print(f"AllPositions: {allPositions}")
+        print(f"AllMoviments: {Allmovements}")
+        print(f"\n\n")
+        if foundSolution:
+            sleep(1.5)
+        if clean: 
+            print(chr(27)+'[2j')
+            print('\033c')
+            print('\x1bc')
 
 """
     to change configuration, change config.py
@@ -74,8 +98,9 @@ if __name__=='__main__':
     pygame.init()
     window = MainWindow(cf.WINDOW_TITLE, cf.MAZE_WIDTH, cf.MAZE_HEIGHT, cf.BLOCK_SIZE, cf.MAZE_NAME)    
     window.generateMaze()
-    finder = SimulateAnnealing(window.maze.internalMaze, window.maze.startingPosition)
-    finder.executeAlgoritm(window.updatePath)
+    config = {"interactionNumber": 90000, "initalTemp": 500000, "decreaseEnergyPercetage" : 0.7}
+    finder = SimulateAnnealing(window.maze.internalMaze, window.maze.startingPosition, False, config)
+    finder.executeAlgoritm(window.printPath)
     mainClock = pygame.time.Clock()
     while True:
 
