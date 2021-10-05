@@ -89,15 +89,14 @@ class MainWindow:
             for node in openSet:
                 (y,x) = node.coordinate
                 self.drawPlayerPath((y + 1, x + 1),(0,200,0))
-                sleep(0.01)
                 self.validadeEvents()
         if(len(closeSet) > 0):
             for node in openSet:
                 (y,x) = node.coordinate
                 self.drawPlayerPath((y + 1, x + 1),(200,0,0))
-                sleep(0.01)
                 self.validadeEvents()
         if(len(endPath) > 0):
+            print(endPath)
             for coordinate in endPath:
                 (y,x) = coordinate
                 self.drawPlayerPath((y + 1, x + 1),(0,0,255))
@@ -148,14 +147,18 @@ if __name__=='__main__':
     pygame.init()
     window = MainWindow(cf.WINDOW_TITLE, cf.MAZE_WIDTH, cf.MAZE_HEIGHT, cf.BLOCK_SIZE, cf.MAZE_NAME)    
     window.generateMaze()
+    
+    astar = AStar(maze=window.maze.internalMaze,start=window.maze.startingPosition,end=window.maze.endPosition)
+    astar.solve(window.astar_printPath)
+
+    sleep(5)
+
     config = {"interactionNumber": 90000, "initalTemp": 500000, "decreaseEnergyPercetage" : 0.7}
     finder = SimulateAnnealing(window.maze.internalMaze, window.maze.startingPosition, False, config)
     finder.executeAlgoritm(window.printPath)
-    #astar = AStar(maze=window.maze.internalMaze,start=window.maze.startingPosition,end=window.maze.endPosition)
-    #astar.solve(window.astar_printPath)
+    
     mainClock = pygame.time.Clock()
     while True:
-
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()

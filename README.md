@@ -1,16 +1,14 @@
 # Maze_path_finder
 
 # Só quero rodar isso pelamor de deus...
-- Request python3.8+
+
+Nosso código utiliza python3
 
 Execute os comandos:
  ```
- $ source bin/active
+ pip install pygame
  ```
- assim estaremos dentro do ambiente virtual do python, usando o python3
-
+ Assim, é só mandar executar o seguinte comando: 
  ```
- $ pip install -r requiriments.txt
+ python3 gui.py
  ```
-
- :point-up: instalando as dependencias.
