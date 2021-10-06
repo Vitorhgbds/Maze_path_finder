@@ -158,8 +158,10 @@ if __name__=='__main__':
     finder.executeAlgoritm(window.printPath)
 
     (currentPath, allPositions, soluctionEnergyValue, wallIdxs, allMovements, foundS, loopedPositions) = finder.getFirst()
-    print(f)
-    
+    print("firstGene")
+    print(f"AllMovs {allMovements}")
+    print(f"H. {soluctionEnergyValue}")
+
     mainClock = pygame.time.Clock()
     while True:
         for event in pygame.event.get():
