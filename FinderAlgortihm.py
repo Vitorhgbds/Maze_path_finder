@@ -144,7 +144,7 @@ class SimulateAnnealing:
                 print("neighboor is better")
                 gene = neighboorGene
                 draw = n % 1000 == 0 or foundS
-                updateDraw((neighboorPath, neighboorGeneEnergyValue, allMovementsNeighboor, allNeighboorPositions, foundSNg, wallIdxs, draw), True)
+                updateDraw((neighboorPath, neighboorGeneEnergyValue, allMovementsNeighboor, allNeighboorPositions, foundSNg, wallIdxs, draw), False)
             else:
                 # 
 
@@ -163,14 +163,14 @@ class SimulateAnnealing:
                     allPositions = allNeighboorPositions
                     foundS = foundSNg
                 draw = n % 1000 == 0 or foundS
-                updateDraw((currentPath, soluctionEnergyValue, allMovements, allPositions, foundS, wallIdxs, draw), True)
+                updateDraw((currentPath, soluctionEnergyValue, allMovements, allPositions, foundS, wallIdxs, draw), False)
             self.currentTemp = self.currentTemp * self.decreaseEnergyPercetage
-        if self.best != None:
-            updateDraw(self.best, False)
-            print('best solution found without hitting walls')
-        elif self.lastSolution:
-            updateDraw(self.lastSolution, False)
-            print('cant find any solution without hitting a wall')
+      #  if self.best != None:
+      #      updateDraw(self.best, False)
+      #      print('best solution found without hitting walls')
+      #  elif self.lastSolution:
+      #      updateDraw(self.lastSolution, False)
+      #      print('cant find any solution without hitting a wall')
 
 
 class Movement:

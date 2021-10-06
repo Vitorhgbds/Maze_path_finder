@@ -110,26 +110,26 @@ class MainWindow:
         print(f"AllMoviments: {Allmovements}")
         print(f"\n\n")
         #self.validadeEvents()
-        if(draw):
-            self.generateMaze()
-            color = (random.randint(55,255),random.randint(55,255),random.randint(55,255))
-            for coordinate in currentPath:
-                self.validadeEvents()
-                (y,x) = coordinate
-                self.drawPlayerPath((y + 1, x + 1),color)
-                self.validadeEvents()
-        if foundSolution:
-            self.generateMaze()
-            sleep(1)
-            color = (random.randint(55,255),random.randint(55,255),random.randint(55,255))
-            if(len(still_to_Fix) > 0):
-                color = (255,0,255)
-            for coordinate in allPositions:
-                self.validadeEvents()
-                (y,x) = coordinate
-                self.drawPlayerPath((y + 1, x + 1),color)
-                sleep(0.01)
-                self.validadeEvents()
+       # if(draw):
+       #     self.generateMaze()
+       #     color = (random.randint(55,255),random.randint(55,255),random.randint(55,255))
+       #     for coordinate in currentPath:
+       #         self.validadeEvents()
+       #         (y,x) = coordinate
+       #         self.drawPlayerPath((y + 1, x + 1),color)
+       #         self.validadeEvents()
+       # if foundSolution:
+       #     self.generateMaze()
+       #     sleep(1)
+       #     color = (random.randint(55,255),random.randint(55,255),random.randint(55,255))
+       #     if(len(still_to_Fix) > 0):
+       #         color = (255,0,255)
+       #     for coordinate in allPositions:
+       #         self.validadeEvents()
+       #         (y,x) = coordinate
+       #         self.drawPlayerPath((y + 1, x + 1),color)
+       #         sleep(0.01)
+       #         self.validadeEvents()
             
         if clean: 
             print(chr(27)+'[2j')
@@ -148,10 +148,10 @@ if __name__=='__main__':
     window = MainWindow(cf.WINDOW_TITLE, cf.MAZE_WIDTH, cf.MAZE_HEIGHT, cf.BLOCK_SIZE, cf.MAZE_NAME)    
     window.generateMaze()
     
-    astar = AStar(maze=window.maze.internalMaze,start=window.maze.startingPosition,end=window.maze.endPosition)
-    astar.solve(window.astar_printPath)
+   # astar = AStar(maze=window.maze.internalMaze,start=window.maze.startingPosition,end=window.maze.endPosition)
+   # astar.solve(window.astar_printPath)
 
-    sleep(5)
+    #sleep(5)
 
     config = {"interactionNumber": 90000, "initalTemp": 500000, "decreaseEnergyPercetage" : 0.7}
     finder = SimulateAnnealing(window.maze.internalMaze, window.maze.startingPosition, False, config)
