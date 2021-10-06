@@ -156,6 +156,9 @@ if __name__=='__main__':
     config = {"interactionNumber": 90000, "initalTemp": 500000, "decreaseEnergyPercetage" : 0.7}
     finder = SimulateAnnealing(window.maze.internalMaze, window.maze.startingPosition, False, config)
     finder.executeAlgoritm(window.printPath)
+
+    (currentPath, allPositions, soluctionEnergyValue, wallIdxs, allMovements, foundS, loopedPositions) = finder.getFirst()
+    print(f)
     
     mainClock = pygame.time.Clock()
     while True:

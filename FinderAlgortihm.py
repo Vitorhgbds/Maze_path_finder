@@ -14,6 +14,7 @@ class SimulateAnnealing:
         self.initalTemp = config["initalTemp"]
         self.currentTemp = self.initalTemp
         self.startingPosition = startingPosition
+        self.firstGene = ()
         self.cleanLoopsAfterComplete = cleanLoopsAfterComplete
         self.decreaseEnergyPercetage = config["decreaseEnergyPercetage"]
         self.currentGeneration = []
@@ -130,6 +131,8 @@ class SimulateAnnealing:
         draw = False
         for n in range(self.interactionNumber): 
             (currentPath, allPositions, soluctionEnergyValue, wallIdxs, allMovements, foundS, loopedPositions) = self._calculateHeuristc(gene)
+            if n == 0:
+                self.firstGene = (currentPath, allPositions, soluctionEnergyValue, wallIdxs, allMovements, foundS, loopedPositions)
             print(f"Loop: {n}. Current Temp: {self.currentTemp}, H: {soluctionEnergyValue}")
             if(soluctionEnergyValue <= 0):
                 print("Energy is perfect")
@@ -172,6 +175,8 @@ class SimulateAnnealing:
             updateDraw(self.lastSolution, False)
             print('cant find any solution without hitting a wall')
 
+    def getFirst(self):
+        return self.firstGene
 
 class Movement:
     UP = 1
